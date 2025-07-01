@@ -1,0 +1,45 @@
+"use server";
+
+import prisma from "@/lib/prisma";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+
+type PostJobResult = {
+  success: boolean;
+};
+
+export default async function createJob(
+  prevState: PostJobResult,
+  formData: FormData
+): Promise<PostJobResult> {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const title = formData.get("title") as string;
+  const company = formData.get("company") as string;
+  const location = formData.get("location") as string;
+  const type = formData.get("type") as string;
+  const description = formData.get("description") as string;
+  const salary = formData.get("salary") as string;
+
+  await prisma.job.create({
+    data: {
+      title,
+      company,
+      location,
+      type,
+      description,
+      salary,
+      postedBy: {
+        connect: {
+          kindeId: user.id,
+        },
+      },
+    },
+  });
+
+  return { success: true };
+}
