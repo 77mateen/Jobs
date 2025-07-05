@@ -121,7 +121,7 @@ function PostJobPage() {
 
         <button
           type="submit"
-          className="bg-indigo-500 hover:bg-indigo-800 w-full rounded-md px-4 py-2 text-white cursor-pointer"
+          className="bg-indigo-600 hover:bg-indigo-800 w-full rounded-md px-4 py-2 text-white cursor-pointer"
         >
           Post a Job
         </button>

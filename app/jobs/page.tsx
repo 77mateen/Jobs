@@ -1,11 +1,14 @@
 import prisma from "@/lib/prisma";
 import JobCard from "@/components/JobCard";
+import ClearSearch from "@/components/ClearFilters";
+import { saveUserToDb } from "@/actions/save-user";
 
 async function JobsPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  saveUserToDb();
   const { title, type, location } = await searchParams;
 
   const query = title as string | undefined;
@@ -34,10 +37,14 @@ async function JobsPage({
     orderBy: { postedAt: "desc" },
     include: { postedBy: true },
   });
+
   return (
-    <div className="space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div className="bg-white p-6 rounded-lg shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Find Jobs</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Find Jobs</h1>
+          <ClearSearch />
+        </div>
         <form className="grid gap-4 md:grid-cols-3">
           <input
             type="text"
