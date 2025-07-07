@@ -1,25 +1,25 @@
 "use server";
 
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
 export async function saveUserToDb() {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const { userId } = await auth();
+  const user = await currentUser();
 
-  if (!user || !user.id || !user.email) return null;
+  if (!userId) throw new Error("User not authenticated");
 
   const existingUser = await prisma.user.findUnique({
-    where: { kindeId: user.id },
+    where: { clerkId: userId },
   });
 
   if (!existingUser) {
     await prisma.user.create({
       data: {
-        email: user.email,
-        name: user.given_name,
-        image: user.picture,
-        kindeId: user.id,
+        email: user?.emailAddresses[0]?.emailAddress || "no email",
+        name: `${user?.firstName || ""} ${user?.lastName || ""}`.trim(),
+        image: user?.imageUrl,
+        clerkId: userId,
       },
     });
   }

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { BriefcaseBusiness } from "lucide-react";
-import { LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { AlignJustify } from "lucide-react";
+import { SignOutButton } from "@clerk/nextjs";
 
 async function Navbar() {
-  const { isAuthenticated } = getKindeServerSession();
-  const isUserAuthenticated = await isAuthenticated();
+  const { userId } = await auth();
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-6xl h-16 mx-auto flex items-center justify-between px-5">
@@ -61,10 +61,17 @@ async function Navbar() {
               </Link>
             </li>
             <li>
-              {isUserAuthenticated ? (
-                <LogoutLink className="text-red-600">Logout</LogoutLink>
+              {userId ? (
+                <SignOutButton>
+                  <button className="text-red-700">Logout</button>
+                </SignOutButton>
               ) : (
-                <LoginLink className="text-indigo-600">Login</LoginLink>
+                <Link
+                  href={"/sign-in"}
+                  className="bg-indigo-600 text-white px-4 py-2 shadow-sm cursor-pointer rounded-md"
+                >
+                  Login
+                </Link>
               )}
             </li>
           </ul>
@@ -87,14 +94,19 @@ async function Navbar() {
           >
             Dashboard
           </Link>
-          {isUserAuthenticated ? (
-            <LogoutLink className="bg-red-700 text-white px-4 py-2 rounded-md shadow-md">
-              Logout
-            </LogoutLink>
+          {userId ? (
+            <SignOutButton>
+              <button className="bg-red-700 text-white px-4 py-2 rounded-md shadow-sm cursor-pointer">
+                Logout
+              </button>
+            </SignOutButton>
           ) : (
-            <LoginLink className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md">
+            <Link
+              href={"/sign-in"}
+              className="bg-indigo-600 text-white px-4 py-2 shadow-sm cursor-pointer rounded-md"
+            >
               Login
-            </LoginLink>
+            </Link>
           )}
         </div>
       </div>

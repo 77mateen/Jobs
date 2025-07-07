@@ -45,9 +45,12 @@ function JobCard({
       </div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <span className="text-sm text-gray-500">Posted by {postedByName}</span>
-        <button className="bg-indigo-600 text-white font-medium px-4 py-2 rounded-md hover:bg-indigo-800 cursor-pointer">
-          <Link href={`/jobs/${id}`}>View Details</Link>
-        </button>
+
+        <Link href={`/jobs/${id}`}>
+          <button className="w-full bg-indigo-600 text-white font-medium px-4 py-2 rounded-md hover:bg-indigo-800 cursor-pointer">
+            View details
+          </button>
+        </Link>
       </div>
     </div>
   );

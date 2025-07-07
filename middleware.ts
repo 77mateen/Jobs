@@ -1,12 +1,16 @@
-import { withAuth } from "@kinde-oss/kinde-auth-nextjs/middleware";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default withAuth(async function middleware(req) {}, {
-  publicPaths: ["/"],
+const isProtectedRoute = createRouteMatcher(["/dashboard", "/jobs(.*)"]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) await auth.protect();
 });
 
 export const config = {
   matcher: [
-    // Run on everything but Next internals and static files
+    // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
   ],
 };

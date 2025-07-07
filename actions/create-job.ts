@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 type PostJobResult = {
   success: boolean;
@@ -11,10 +11,9 @@ export default async function createJob(
   prevState: PostJobResult,
   formData: FormData
 ): Promise<PostJobResult> {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const { userId } = await auth();
 
-  if (!user?.id) {
+  if (!userId) {
     throw new Error("Unauthorized");
   }
 
@@ -35,7 +34,7 @@ export default async function createJob(
       salary,
       postedBy: {
         connect: {
-          kindeId: user.id,
+          clerkId: userId,
         },
       },
     },

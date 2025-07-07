@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 type State = {
   success: boolean;
@@ -13,13 +13,14 @@ export async function applyJob(
 ): Promise<State> {
   const jobid = formData.get("jobId")?.toString();
 
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-  const userId = user?.id;
+  const { userId } = await auth();
 
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
   const existingUser = await prisma.user.findUnique({
     where: {
-      kindeId: userId,
+      clerkId: userId,
     },
   });
 
@@ -40,8 +41,8 @@ export async function applyJob(
 
     await prisma.application.create({
       data: {
-        jobId: jobid,
-        userId: existingUser?.id,
+        jobId: jobid as string,
+        userId: existingUser?.id as string,
       },
     });
 

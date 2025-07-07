@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { MoveRight } from "lucide-react";
+import { Dot, MoveRight } from "lucide-react";
 
 export default async function Home() {
   const latestJobs = await prisma.job.findMany({
@@ -18,12 +18,28 @@ export default async function Home() {
   });
   return (
     <div className="">
-      <div className="text-center py-10 sm:py-16 mb-10 bg-white rounded-lg shadow-sm">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
-          Find Your Dream Job
+      <div className="text-center py-10 px-3 sm:py-16 mb-10  rounded-lg">
+        <h1 className="sm:hidden text-4xl sm:text-4xl font-extrabold text-gray-900 mb-5">
+          Find Your Dream <br />{" "}
+          <span
+            className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r
+            from-indigo-500 via-purple-500 to-indigo-500"
+          >
+            Job
+          </span>
         </h1>
-        <p className="text-sm sm:text-lg text-gray-600 mb-6">
-          Browse hundreds of job listings by title, type, and location.
+        <h1 className="hidden sm:block text-4xl sm:text-4xl font-extrabold text-gray-900 mb-5">
+          Find Your Dream{" "}
+          <span
+            className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r
+            from-indigo-500 via-purple-500 to-indigo-500"
+          >
+            Job
+          </span>
+        </h1>
+        <p className="text-[16px]  text-gray-600 mb-6">
+          Explore thousands of job listings tailored for developers, designers,
+          managers, and more. <br /> Land your next opportunity, <br /> today.
         </p>
         <Link href={"/jobs"}>
           <button className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-indigo-800 hover:shadow-md cursor-pointer">
@@ -32,7 +48,7 @@ export default async function Home() {
         </Link>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-800 mb-2">Recent Jobs</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Jobs</h2>
       <div className="max-w-7xl flex flex-col sm:flex-row justify-between gap-4">
         {latestJobs.map((job) => (
           <div key={job.id} className=" w-full bg-white p-5 rounded-md">
@@ -42,11 +58,12 @@ export default async function Home() {
             <p className="text-gray-600 mb-2">{job.company}</p>
             <div className="flex items-center text-sm text-gray-500 mb-4">
               <p>{job.location}</p>
+              <Dot />
               <p>{job.type}</p>
             </div>
-            <p className=" text-gray-600 mb-4 line-clamp-1">
+            {/* <p className=" text-gray-600 mb-4 line-clamp-1">
               {job.description}
-            </p>
+            </p> */}
             <Link
               href={`/jobs/${job.id}`}
               className="flex items-center gap-2 text-indigo-600"

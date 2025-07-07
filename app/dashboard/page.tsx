@@ -1,16 +1,19 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Dot } from "lucide-react";
 
 async function DashboardPage() {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
 
   const existingUser = await prisma.user.findUnique({
     where: {
-      kindeId: user?.id,
+      clerkId: userId,
     },
   });
 
@@ -67,7 +70,7 @@ async function DashboardPage() {
           <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
             {postedJobs.length === 0 ? (
               <p className="p-6 text-gray-500 text-center">
-                You haven't posted any jobs yet.
+                You haven&apos;t posted any jobs yet.
               </p>
             ) : (
               postedJobs.map((job) => (
@@ -116,7 +119,7 @@ async function DashboardPage() {
           <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
             {applications.length === 0 ? (
               <p className="text-center text-gray-500 p-6">
-                You haven't applied to any jobs yet
+                You haven&apos;t applied to any jobs yet
               </p>
             ) : (
               applications.map((application) => (
