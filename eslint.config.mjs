@@ -14,8 +14,13 @@ const eslintConfig = [
 
   {
     rules: {
-      "@typescript-eslint/no-unused-expressions": "off", // ✅ disable the rule here
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-this-alias": "off",
     },
+  },
+
+  {
+    ignores: ["generated", "node_modules", ".next"],
   },
 ];
 
